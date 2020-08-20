@@ -12,7 +12,7 @@ int main(int argc, const char*argv[])
    
     try
     {
-        Worker *worker = new Worker("text.txt","write","4096");
+        Worker *worker = new Worker(argv[1],argv[2],argv[3]);
         std::string comand;
         std::string patern;
         std::string new_replace;
