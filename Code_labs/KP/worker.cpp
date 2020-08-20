@@ -97,7 +97,7 @@ std::vector<size_t> Worker::Boyer_Mur(char*text,std::string patern,size_t size)
     shift=Skip_symbol(patern);
     std::vector<size_t> result;
     size_t skip=0;
-    while(size-skip>patern.size())
+    while(size-skip>=patern.size())
     {
         size_t i=patern.size()-1;
         while(text[i+skip]==patern[i])
@@ -105,6 +105,7 @@ std::vector<size_t> Worker::Boyer_Mur(char*text,std::string patern,size_t size)
             if(i==0)
             {
                 result.push_back(skip);
+                break;
             }
             --i;
         }
@@ -116,16 +117,17 @@ std::vector<size_t> Worker::Boyer_Mur(char*text,std::string patern,size_t size)
 }
 
 
-void Worker:: FindForReplace(char**text,std::string patern,std::string new_replace)
+void Worker:: FindForReplace(char**text,std::string patern,std::string new_replace,size_t size)
 {
     std::vector<size_t> shift;
     shift=Skip_symbol(patern);
     size_t skip=0;
-    while(strlen(*text)-skip>patern.size())
+    while(size-skip>=patern.size())
     {
         size_t i=patern.size()-1;
-        while( (*text)[i+skip]==patern[i])
+        while((*text)[i+skip]==patern[i])
         {
+            
             if(i==0)
             {
                size_t j=0;
@@ -134,6 +136,7 @@ void Worker:: FindForReplace(char**text,std::string patern,std::string new_repla
                     (*text)[k]=new_replace[j];
                     ++j;
                 }
+                break;
             }
             --i;
         }
@@ -163,15 +166,7 @@ std::string Worker::EnterCounter(char*text,std::string patern,size_t *line_count
     return output;
 }
 
-void Worker::ReplaceInStr(char**text,size_t position,std::string new_replace)
-{
-    size_t j=0;
-    for(size_t i=position;i<position+new_replace.size();++i)
-    {
-        (*text)[i]=new_replace[j];
-        ++j;
-    }
-}
+
 
 std::string Worker::Replace(std::string patern,std::string new_replace)
 {
@@ -214,13 +209,13 @@ std::string Worker::Replace(std::string patern,std::string new_replace)
             }
             munmap(text,size_mapping_);
             text=text_tmp;
-            FindForReplace(&text,patern,new_replace);
+            FindForReplace(&text,patern,new_replace,size_mapping);
             
         }
         else
         {
             text=(char*)mmap(NULL,size_mapping,open_parametr_,MAP_SHARED,fd_,position);
-            FindForReplace(&text,patern,new_replace);
+            FindForReplace(&text,patern,new_replace,size_mapping);
         }
         position+=size_mapping;
         copy_mass=new char[size_of_patern-1];
