@@ -91,11 +91,11 @@ std::vector<size_t> Worker::Skip_symbol(std::string patern)const
     return result;
 }
 
-std::vector<size_t> Worker::Boyer_Mur(char*text,std::string patern,size_t size)
+std::vector<int> Worker::Boyer_Mur(char*text,std::string patern,size_t size)
 {
     std::vector<size_t> shift;
     shift=Skip_symbol(patern);
-    std::vector<size_t> result;
+    std::vector<int> result;
     size_t skip=0;
     while(size-skip>=patern.size())
     {
@@ -146,7 +146,7 @@ void Worker:: FindForReplace(char**text,std::string patern,std::string new_repla
 
 std::string Worker::EnterCounter(char*text,std::string patern,size_t *line_counter,size_t size)
 {
-    std::vector<size_t> find_pos=Worker::Boyer_Mur(text,patern,size);
+    std::vector<int> find_pos=Worker::Boyer_Mur(text,patern,size);
     std::vector<size_t> result;
     std::string output;
     for(size_t i=0;i<size+1;++i)
@@ -191,7 +191,7 @@ std::string Worker::Replace(std::string patern,std::string new_replace)
         {
             text_tmp=(char*)mmap(NULL,size_mapping,open_parametr_,MAP_SHARED,fd_,position);
             Copy(text_tmp,&copy_mass,0,size_of_patern-1,size_of_patern-1);
-            std::vector<size_t> pos=Boyer_Mur(copy_mass,patern,(size_of_patern-1)*2);
+            std::vector<int> pos=Boyer_Mur(copy_mass,patern,(size_of_patern-1)*2);
             if(pos[0]!=-1)
             {
                 size_t j=0;
@@ -248,7 +248,7 @@ std::string Worker::Find(std::string patern)
         {
            
             Copy(text,&copy_mass,0,size_of_patern-1,size_of_patern-1);
-            std::vector<size_t> tmp_pos=Boyer_Mur(copy_mass,patern,(size_of_patern-1)*2);
+            std::vector<int> tmp_pos=Boyer_Mur(copy_mass,patern,(size_of_patern-1)*2);
             if(tmp_pos[0]!=-1)
                 result+="line "+std::to_string(line_counter)+'\n';
             result+=EnterCounter(text,patern,&line_counter,size_mapping);
